@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: broken-pod
+  labels:
+    app: broken
+spec:
+  containers:
+    - name: broken
+      image: nginx:definitely-not-a-real-tag
