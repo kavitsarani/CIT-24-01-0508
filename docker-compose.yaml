@@ -1,0 +1,47 @@
+
+services:
+  expense_web:
+    build: ./app
+    container_name: expense_web
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=expense_database
+      - DB_USER=expense_user
+      - DB_PASSWORD=expense_pass
+      - DB_NAME=expense_db
+    depends_on:
+      expense_database:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - expense_network
+
+  expense_database:
+    image: mysql:8.0
+    container_name: expense_database
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: expense_db
+      MYSQL_USER: expense_user
+      MYSQL_PASSWORD: expense_pass
+    volumes:
+      - expense_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - expense_network
+
+networks:
+  expense_network:
+    driver: bridge
+
+volumes:
+  expense_data:

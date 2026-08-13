@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Expense Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        /* Add Expense Form */
+        .form-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-card h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 1.3em;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95em;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .btn-add {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .btn-add:hover {
+            background-color: #219a52;
+        }
+
+        /* Total Card */
+        .total-card {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            border-radius: 10px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .total-card h2 {
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+
+        .total-card .amount {
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        /* Expenses Table */
+        .table-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .table-card h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 1.3em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            background-color: #f8f9fa;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 2px solid #eee;
+            font-size: 0.9em;
+        }
+
+        tbody td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.95em;
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background-color 0.2s;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+
+        .no-expenses {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            font-size: 1em;
+        }
+
+        @media (max-width: 600px) {
+            .form-group {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>💰 Personal Expense Tracker</h1>
+
+        <!-- Add Expense Form -->
+        <div class="form-card">
+            <h2>Add New Expense</h2>
+            <form action="/add" method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <input type="text" id="description" name="description" placeholder="e.g. Lunch" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select category</option>
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Health">Health</option>
+                            <option value="Education">Education</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="amount">Amount (Rs.)</label>
+                        <input type="number" id="amount" name="amount" step="0.01" min="0.01" placeholder="0.00"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expense_date">Date</label>
+                        <input type="date" id="expense_date" name="expense_date" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-add">Add Expense</button>
+            </form>
+        </div>
+
+        <!-- Total Expenses -->
+        <div class="total-card">
+            <h2>Total Expenses</h2>
+            <span class="amount">Rs. {{ "%.2f"|format(total) }}</span>
+        </div>
+
+        <!-- Expenses Table -->
+        <div class="table-card">
+            <h2>All Expenses</h2>
+            {% if expenses %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.id }}</td>
+                        <td>{{ expense.description }}</td>
+                        <td>{{ expense.category }}</td>
+                        <td>Rs. {{ "%.2f"|format(expense.amount) }}</td>
+                        <td>{{ expense.expense_date }}</td>
+                        <td>
+                            <form action="/delete/{{ expense.id }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn-delete"
+                                    onclick="return confirm('Delete this expense?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="no-expenses">No expenses recorded yet. Add your first expense above!</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+
+</html>
